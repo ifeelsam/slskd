@@ -1,9 +1,8 @@
 import api from './api';
 
 export const list = async ({ root, subdirectory = '' }) => {
-  const response = (
-    await api.get(`/files/${root}/directories/${btoa(subdirectory)}`)
-  ).data;
+  const suffix = subdirectory ? `/${btoa(subdirectory)}` : '';
+  const response = (await api.get(`/files/${root}/directories${suffix}`)).data;
 
   return response;
 };

@@ -1,9 +1,11 @@
+import { joinRelativePath } from '../../lib/downloadDestination';
 import * as transfers from '../../lib/transfers';
 import { formatBytes } from '../../lib/util';
+import DownloadActions from '../Shared/DownloadActions';
 import FileBrowser from './FileBrowser';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-import { Button, Card, Icon, Label } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 
 // because the entire browse response is stored in indexeddb, it is possible for us
 // to display more files than can be saved in the (much faster) local storage state
@@ -93,7 +95,7 @@ class Selection extends Component {
     );
   };
 
-  handleDownload = () => {
+  handleDownload = (selectedDestination) => {
     const { name, separator, username } = this.props;
     const selectedFiles = this.state.files.filter((f) => f.selected);
     const parent = name.split(separator).slice(0, -1).join(separator);
@@ -117,10 +119,20 @@ class Selection extends Component {
 
         const rootFiles = groups.get('') || [];
         if (rootFiles.length > 0) {
-          await transfers.download({
-            files: rootFiles.map(({ filename, size }) => ({ filename, size })),
-            username,
-          });
+          const files = rootFiles.map(({ filename, size }) => ({
+            filename,
+            size,
+          }));
+
+          if (selectedDestination) {
+            await transfers.enqueueBatch({
+              files,
+              options: { destination: selectedDestination },
+              username,
+            });
+          } else {
+            await transfers.download({ files, username });
+          }
         }
 
         for (const [dirName, dirFiles] of groups) {
@@ -128,10 +140,13 @@ class Selection extends Component {
             continue;
           }
 
-          const destination = (prefix + dirName)
+          const remoteDestination = (prefix + dirName)
             .slice(parent.length > 0 ? parent.length + 1 : 0)
             .split(separator)
             .join('/');
+          const destination = selectedDestination
+            ? joinRelativePath(selectedDestination, remoteDestination)
+            : remoteDestination;
           await transfers.enqueueBatch({
             files: dirFiles.map(({ filename, size }) => ({ filename, size })),
             options: { destination },
@@ -182,49 +197,13 @@ class Selection extends Component {
         </Card.Content>
         {selectedFiles.length > 0 && (
           <Card.Content extra>
-            <span>
-              <Button
-                color="green"
-                content="Download"
-                disabled={downloadRequest === 'inProgress'}
-                icon="download"
-                label={{
-                  as: 'a',
-                  basic: false,
-                  content: `${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'}, ${totalSize}`,
-                }}
-                labelPosition="right"
-                onClick={this.handleDownload}
-              />
-              {downloadRequest === 'inProgress' && (
-                <Icon
-                  loading
-                  name="circle notch"
-                  size="large"
-                />
-              )}
-              {downloadRequest === 'complete' && (
-                <Icon
-                  color="green"
-                  name="checkmark"
-                  size="large"
-                />
-              )}
-              {downloadRequest === 'error' && (
-                <span>
-                  <Icon
-                    color="red"
-                    name="x"
-                    size="large"
-                  />
-                  <Label>
-                    {downloadError?.data
-                      ? `${downloadError.data} (HTTP ${downloadError.status} ${downloadError.statusText})`
-                      : 'Download failed'}
-                  </Label>
-                </span>
-              )}
-            </span>
+            <DownloadActions
+              downloadError={downloadError}
+              downloadRequest={downloadRequest}
+              fileCount={selectedFiles.length}
+              onDownload={this.handleDownload}
+              totalSize={totalSize}
+            />
           </Card.Content>
         )}
       </Card>

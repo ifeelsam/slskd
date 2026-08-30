@@ -1,10 +1,11 @@
 import * as transfers from '../../lib/transfers';
 import { getDirectoryContents } from '../../lib/users';
 import { formatBytes, getDirectoryName } from '../../lib/util';
+import DownloadActions from '../Shared/DownloadActions';
 import FileList from '../Shared/FileList';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
-import { Button, Card, Icon, Label } from 'semantic-ui-react';
+import { Card, Icon } from 'semantic-ui-react';
 
 const buildTree = (response) => {
   let { files = [] } = response;
@@ -57,14 +58,23 @@ class Response extends Component {
     }));
   };
 
-  download = (username, files) => {
+  download = (username, files, destination) => {
     this.setState({ downloadRequest: 'inProgress' }, async () => {
       try {
         const requests = (files || []).map(({ filename, size }) => ({
           filename,
           size,
         }));
-        await transfers.download({ files: requests, username });
+
+        if (destination) {
+          await transfers.enqueueBatch({
+            files: requests,
+            options: { destination },
+            username,
+          });
+        } else {
+          await transfers.download({ files: requests, username });
+        }
 
         this.setState({ downloadRequest: 'complete' });
       } catch (error) {
@@ -216,50 +226,16 @@ class Response extends Component {
         </Card.Content>
         {selectedFiles.length > 0 && (
           <Card.Content extra>
-            <span>
-              <Button
-                color="green"
-                content="Download"
-                disabled={
-                  this.props.disabled || downloadRequest === 'inProgress'
-                }
-                icon="download"
-                label={{
-                  as: 'a',
-                  basic: false,
-                  content: `${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'}, ${selectedSize}`,
-                }}
-                labelPosition="right"
-                onClick={() => this.download(response.username, selectedFiles)}
-              />
-              {downloadRequest === 'inProgress' && (
-                <Icon
-                  loading
-                  name="circle notch"
-                  size="large"
-                />
-              )}
-              {downloadRequest === 'complete' && (
-                <Icon
-                  color="green"
-                  name="checkmark"
-                  size="large"
-                />
-              )}
-              {downloadRequest === 'error' && (
-                <span>
-                  <Icon
-                    color="red"
-                    name="x"
-                    size="large"
-                  />
-                  <Label>
-                    {downloadError.data +
-                      ` (HTTP ${downloadError.status} ${downloadError.statusText})`}
-                  </Label>
-                </span>
-              )}
-            </span>
+            <DownloadActions
+              disabled={this.props.disabled}
+              downloadError={downloadError}
+              downloadRequest={downloadRequest}
+              fileCount={selectedFiles.length}
+              onDownload={(destination) =>
+                this.download(response.username, selectedFiles, destination)
+              }
+              totalSize={selectedSize}
+            />
           </Card.Content>
         )}
       </Card>

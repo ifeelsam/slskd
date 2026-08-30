@@ -1,0 +1,33 @@
+.download-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.download-folder-button {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.download-folder-modal-help {
+  margin-bottom: 1em;
+}
+
+.download-folder-modal-path {
+  margin-bottom: 0.75em;
+}
+
+.download-folder-modal-list {
+  margin-bottom: 1em;
+  max-height: 280px;
+  min-height: 4em;
+  overflow: auto;
+}
+
+.download-folder-modal-empty {
+  opacity: 0.6;
+  padding: 1em 0;
+}
