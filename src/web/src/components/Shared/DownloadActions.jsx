@@ -1,6 +1,7 @@
 import './DownloadActions.css';
 import {
   getDownloadDestination,
+  getQuickLocations,
   setDownloadDestination,
 } from '../../lib/downloadDestination';
 import DownloadFolderModal from './DownloadFolderModal';
@@ -17,10 +18,22 @@ const DownloadActions = ({
 }) => {
   const [destination, setDestination] = useState(getDownloadDestination);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [quickLocations, setQuickLocations] = useState(getQuickLocations);
 
   const handleSelect = (path) => {
     setDestination(setDownloadDestination(path));
     setPickerOpen(false);
+    // Refresh quick locations in case user added/removed while picker was open
+    setQuickLocations(getQuickLocations());
+  };
+
+  const handlePickerClose = () => {
+    setPickerOpen(false);
+    setQuickLocations(getQuickLocations());
+  };
+
+  const handleQuickLocation = (path) => {
+    setDestination(setDownloadDestination(path));
   };
 
   return (
@@ -38,6 +51,23 @@ const DownloadActions = ({
         labelPosition="right"
         onClick={() => onDownload(destination)}
       />
+
+      {/* Quick location shortcut buttons */}
+      {quickLocations.map((loc) => (
+        <Button
+          active={destination === loc.path}
+          className={`download-quick-location-btn${destination === loc.path ? ' download-quick-location-btn--active' : ''}`}
+          disabled={disabled || downloadRequest === 'inProgress'}
+          icon="star"
+          key={loc.name}
+          onClick={() => handleQuickLocation(loc.path)}
+          title={loc.path}
+        >
+          {loc.name}
+        </Button>
+      ))}
+
+      {/* Folder picker button */}
       <Button
         className="download-folder-button"
         disabled={disabled || downloadRequest === 'inProgress'}
@@ -47,6 +77,7 @@ const DownloadActions = ({
       >
         {destination || 'Default folder'}
       </Button>
+
       {downloadRequest === 'inProgress' && (
         <Icon
           loading
@@ -76,7 +107,7 @@ const DownloadActions = ({
         </span>
       )}
       <DownloadFolderModal
-        onClose={() => setPickerOpen(false)}
+        onClose={handlePickerClose}
         onSelect={handleSelect}
         open={pickerOpen}
         selectedPath={destination}

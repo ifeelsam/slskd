@@ -2,6 +2,7 @@ import * as transfers from '../../lib/transfers';
 import { getDirectoryContents } from '../../lib/users';
 import { formatBytes, getDirectoryName } from '../../lib/util';
 import DownloadActions from '../Shared/DownloadActions';
+import DownloadFolderModal from '../Shared/DownloadFolderModal';
 import FileList from '../Shared/FileList';
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
@@ -28,6 +29,8 @@ class Response extends Component {
     super(props);
 
     this.state = {
+      contextPending: null, // { files: [] } waiting for folder picker
+      contextPickerOpen: false,
       downloadError: '',
       downloadRequest: undefined,
       fetchingDirectoryContents: false,
@@ -141,11 +144,37 @@ class Response extends Component {
     this.setState((previousState) => ({ isFolded: !previousState.isFolded }));
   };
 
+  /**
+   * Open the folder-picker wizard for a right-click context action.
+   * `files` is the array of files to download once the user picks a destination.
+   */
+  openContextPicker = (files) => {
+    if (!files || files.length === 0) return;
+    this.setState({ contextPending: { files }, contextPickerOpen: true });
+  };
+
+  handleContextPickerSelect = (destination) => {
+    const { contextPending } = this.state;
+    this.setState({ contextPickerOpen: false, contextPending: null });
+    if (contextPending?.files?.length > 0) {
+      this.download(
+        this.props.response.username,
+        contextPending.files,
+        destination,
+      );
+    }
+  };
+
+  handleContextPickerClose = () => {
+    this.setState({ contextPickerOpen: false, contextPending: null });
+  };
+
   render() {
     const { response } = this.props;
     const free = response.hasFreeUploadSlot;
 
     const {
+      contextPickerOpen,
       downloadError,
       downloadRequest,
       fetchingDirectoryContents,
@@ -220,6 +249,12 @@ class Response extends Component {
               }
               key={directory}
               locked={tree[directory].find((file) => file.locked)}
+              onDownloadAs={(file) => this.openContextPicker([file])}
+              onDownloadFile={(file) => this.openContextPicker([file])}
+              onDownloadFolder={(dir) => {
+                const allFiles = tree[dir] ?? [];
+                this.openContextPicker(allFiles);
+              }}
               onSelectionChange={this.handleFileSelectionChange}
             />
           ))}
@@ -238,6 +273,13 @@ class Response extends Component {
             />
           </Card.Content>
         )}
+        {/* Folder picker wizard for right-click context menu actions */}
+        <DownloadFolderModal
+          onClose={this.handleContextPickerClose}
+          onSelect={this.handleContextPickerSelect}
+          open={contextPickerOpen}
+          selectedPath={undefined}
+        />
       </Card>
     );
   }

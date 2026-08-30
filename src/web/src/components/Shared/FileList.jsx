@@ -4,6 +4,11 @@ import {
   formatSeconds,
   getFileName,
 } from '../../lib/util';
+import {
+  ContextMenuDivider,
+  ContextMenuItem,
+  useContextMenu,
+} from './ContextMenu';
 import React, { useState } from 'react';
 import { Checkbox, Header, Icon, List, Table } from 'semantic-ui-react';
 
@@ -14,9 +19,13 @@ const FileList = ({
   footer,
   locked,
   onClose,
+  onDownloadAs,
+  onDownloadFile,
+  onDownloadFolder,
   onSelectionChange,
 }) => {
   const [folded, setFolded] = useState(false);
+  const { bindContextMenu, contextMenu } = useContextMenu();
 
   return (
     <div style={{ opacity: locked ? 0.5 : 1 }}>
@@ -78,7 +87,10 @@ const FileList = ({
                 {files
                   .sort((a, b) => (a.filename > b.filename ? 1 : -1))
                   .map((f) => (
-                    <Table.Row key={f.filename}>
+                    <Table.Row
+                      key={f.filename}
+                      {...bindContextMenu(f)}
+                    >
                       <Table.Cell className="filelist-selector">
                         <Checkbox
                           checked={f.selected}
@@ -116,6 +128,34 @@ const FileList = ({
           </List.Item>
         </List>
       )}
+
+      {/* Right-click context menu */}
+      {contextMenu((file) => (
+        <>
+          <ContextMenuItem
+            disabled={disabled || !file}
+            icon="download"
+            onClick={() => onDownloadFile?.(file)}
+          >
+            Download file to…
+          </ContextMenuItem>
+          <ContextMenuItem
+            disabled={disabled || !file || !onDownloadAs}
+            icon="folder open"
+            onClick={() => onDownloadAs?.(file)}
+          >
+            Download as… (choose folder)
+          </ContextMenuItem>
+          <ContextMenuDivider />
+          <ContextMenuItem
+            disabled={disabled || !onDownloadFolder}
+            icon="folder"
+            onClick={() => onDownloadFolder?.(directoryName)}
+          >
+            Download folder to…
+          </ContextMenuItem>
+        </>
+      ))}
     </div>
   );
 };

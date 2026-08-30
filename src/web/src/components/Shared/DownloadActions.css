@@ -1,3 +1,5 @@
+/* ─── Download Actions bar ──────────────────────────────────────────────── */
+
 .download-actions {
   align-items: center;
   display: flex;
@@ -12,6 +14,658 @@
   white-space: nowrap;
 }
 
+/* Quick location shortcut buttons */
+.download-quick-location-btn {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85em !important;
+}
+
+.download-quick-location-btn--active {
+  font-weight: 600 !important;
+}
+
+/* ─── Download Folder Modal (dfm) ───────────────────────────────────────── */
+
+/* Suppress default Semantic UI modal padding/border so we can fully control layout */
+.ui.modal.dfm-modal > .content {
+  padding: 0 !important;
+}
+
+/* Ensure the modal uses flex col */
+.ui.modal.dfm-modal {
+  display: flex !important;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.dfm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+:root.dark .dfm-header {
+  border-bottom-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+.dfm-header-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dfm-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: inherit;
+  opacity: 0.5;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.dfm-close-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.dark .dfm-close-btn:hover {
+  background: var(--slskd-hover-background, #30363d);
+}
+
+/* ── Tabs ── */
+.dfm-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+:root.dark .dfm-tabs {
+  border-bottom-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+.dfm-tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: inherit;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  transition: opacity 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dfm-tab:hover {
+  opacity: 0.85;
+}
+
+.dfm-tab--active {
+  opacity: 1;
+  border-bottom-color: #2185d0;
+}
+
+:root.dark .dfm-tab--active {
+  border-bottom-color: var(--smui-site-link-color, #58a6ff);
+}
+
+/* ── Body ── */
+.dfm-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ── Address Bar ── */
+.dfm-address-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+}
+
+:root.dark .dfm-address-bar {
+  border-bottom-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dfm-address-home {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0.55;
+  transition: opacity 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+
+.dfm-address-home:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.dark .dfm-address-home:hover {
+  background: var(--slskd-hover-background, #30363d);
+}
+
+.dfm-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  flex: 1;
+  gap: 2px;
+  font-size: 0.88rem;
+}
+
+.dfm-crumb {
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 3px;
+  padding: 1px 4px;
+  /* Reset button styles when used as button element */
+  background: transparent;
+  border: none;
+  cursor: default;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.dfm-crumb--active {
+  font-weight: 600;
+}
+
+.dfm-crumb--link {
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.12s;
+}
+
+.dfm-crumb--link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.dfm-crumb-divider {
+  opacity: 0.35 !important;
+  font-size: 0.8em !important;
+  flex-shrink: 0;
+}
+
+.dfm-reset-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: inherit;
+  opacity: 0.65;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+
+.dfm-reset-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:root.dark .dfm-reset-btn {
+  border-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+:root.dark .dfm-reset-btn:hover {
+  background: var(--slskd-hover-background, #30363d);
+}
+
+/* ── Folder list ── */
+.dfm-list-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 160px;
+  max-height: 280px;
+}
+
+.dfm-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 28px 16px;
+  opacity: 0.5;
+  font-size: 0.9rem;
+  text-align: center;
+  flex-direction: column;
+}
+
+.dfm-empty--saved {
+  padding: 40px 16px;
+}
+
+.dfm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dfm-list-item {
+  padding: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.dfm-list-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 16px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: inherit;
+  transition: background 0.1s;
+  user-select: none;
+}
+
+.dfm-list-item-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+:root.dark .dfm-list-item {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+:root.dark .dfm-list-item-btn:hover {
+  background: var(--slskd-subtle-background, rgba(110, 118, 129, 0.1));
+}
+
+.dfm-item-icon {
+  color: #e6a817 !important;
+  flex-shrink: 0;
+}
+
+.dfm-item-name {
+  flex: 1;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dfm-item-chevron {
+  opacity: 0.3 !important;
+  font-size: 0.85em !important;
+  flex-shrink: 0;
+  transition: opacity 0.1s;
+}
+
+.dfm-list-item-btn:hover .dfm-item-chevron {
+  opacity: 0.7 !important;
+}
+
+/* ── Selection / Download here bar ── */
+.dfm-selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(33, 133, 208, 0.04);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+:root.dark .dfm-selection-bar {
+  background: rgba(31, 111, 235, 0.07);
+  border-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+.dfm-selection-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  opacity: 0.75;
+}
+
+.dfm-selection-label {
+  font-size: 0.82rem;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dfm-selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.dfm-pin-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 6px;
+  color: inherit;
+  opacity: 0.55;
+  transition: opacity 0.12s, background 0.12s, color 0.12s;
+  font-size: 0.9rem;
+}
+
+.dfm-pin-btn:hover {
+  opacity: 1;
+}
+
+.dfm-pin-btn--active {
+  opacity: 1;
+  color: #e6a817;
+  border-color: #e6a817;
+}
+
+:root.dark .dfm-pin-btn {
+  border-color: var(--slskd-tertiary-border-color);
+}
+
+.dfm-download-here-btn {
+  background: #2185d0;
+  border: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.dfm-download-here-btn:hover:not(:disabled) {
+  background: #1678c2;
+}
+
+.dfm-download-here-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── New folder section ── */
+.dfm-new-folder {
+  padding: 12px 14px 14px;
+  flex-shrink: 0;
+}
+
+.dfm-new-folder-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dfm-new-folder-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* Dark-mode-safe custom input — fixes the black-text-on-dark bug */
+.dfm-new-folder-input {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  font-size: 0.9rem;
+  background: #fff;
+  color: #333;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.dfm-new-folder-input:focus {
+  border-color: #2185d0;
+}
+
+/* Dark mode overrides for the input */
+:root.dark .dfm-new-folder-input {
+  background: var(--slskd-color-inset, #010409);
+  border-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+  color: var(--slskd-color, #c9d1d9);
+}
+
+:root.dark .dfm-new-folder-input:focus {
+  border-color: var(--smui-site-link-color, #58a6ff);
+}
+
+.dfm-new-folder-input::placeholder {
+  color: #999;
+}
+
+:root.dark .dfm-new-folder-input::placeholder {
+  color: var(--slskd-color-subtle, #6e7681);
+}
+
+.dfm-new-folder-btn {
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.05);
+  color: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.12s;
+}
+
+.dfm-new-folder-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.dfm-new-folder-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+:root.dark .dfm-new-folder-btn {
+  background: var(--slskd-tertiary-background, #21262d);
+  border-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+  color: var(--slskd-color, #c9d1d9);
+}
+
+:root.dark .dfm-new-folder-btn:hover:not(:disabled) {
+  background: var(--slskd-hover-background, #30363d);
+}
+
+/* ── Saved panel ── */
+.dfm-saved-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0;
+}
+
+.dfm-saved-help {
+  padding: 12px 16px 8px;
+  font-size: 0.85rem;
+  opacity: 0.65;
+  margin: 0;
+}
+
+.dfm-saved-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dfm-saved-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background 0.1s;
+}
+
+.dfm-saved-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:root.dark .dfm-saved-item {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+:root.dark .dfm-saved-item:hover {
+  background: var(--slskd-subtle-background, rgba(110, 118, 129, 0.1));
+}
+
+.dfm-saved-item > .icon {
+  color: #e6a817 !important;
+  flex-shrink: 0;
+}
+
+.dfm-saved-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dfm-saved-item-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dfm-saved-item-path {
+  font-size: 0.75rem;
+  font-family: monospace;
+  opacity: 0.55;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dfm-saved-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.dfm-saved-use-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+
+.dfm-saved-use-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dfm-saved-use-btn--primary {
+  background: #2185d0;
+  border-color: #2185d0;
+  color: #fff;
+}
+
+.dfm-saved-use-btn--primary:hover {
+  background: #1678c2;
+}
+
+:root.dark .dfm-saved-use-btn {
+  border-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+:root.dark .dfm-saved-use-btn:hover:not(.dfm-saved-use-btn--primary) {
+  background: var(--slskd-hover-background, #30363d);
+}
+
+.dfm-saved-remove-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 5px;
+  color: inherit;
+  opacity: 0.4;
+  transition: opacity 0.12s, color 0.12s;
+}
+
+.dfm-saved-remove-btn:hover {
+  opacity: 1;
+  color: #db2828;
+}
+
+.dfm-saved-add {
+  padding: 12px 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+:root.dark .dfm-saved-add {
+  border-top-color: var(--slskd-tertiary-border-color, rgba(240, 246, 252, 0.1));
+}
+
+/* Legacy classes — kept for any other places that reference them */
 .download-folder-modal-help {
   margin-bottom: 1em;
 }
