@@ -121,7 +121,9 @@ const DownloadFolderModal = ({ onClose, onSelect, open, selectedPath }) => {
         </div>
         {error ? (
           <Message
-            content={typeof error === 'string' ? error : 'Failed to list folders'}
+            content={
+              typeof error === 'string' ? error : 'Failed to list folders'
+            }
             negative
             size="small"
           />
