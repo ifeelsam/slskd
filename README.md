@@ -71,7 +71,7 @@ docker run -d \
   -e SLSKD_REMOTE_CONFIGURATION=true \
   -v <path/to/application/data>:/app \
   --name slskd \
-  slskd/slskd:latest
+  ifeelsam/slskd:n
 ```
 
 ### With Docker-Compose
@@ -81,7 +81,7 @@ Choose Docker's built-in method of specifying a user for the container:
 ```yaml
 services:
   slskd:
-    image: slskd/slskd
+    image: ifeelsam/slskd
     container_name: slskd
     user: "1000:1000"
     ports:
