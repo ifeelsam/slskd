@@ -67,7 +67,11 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = initialState;
+    this.state = {
+      ...initialState,
+      sidebarCollapsed:
+        localStorage.getItem('slskd-sidebar-collapsed') === 'true',
+    };
     this.hubConnections = {};
   }
 
@@ -166,7 +170,14 @@ class App extends Component {
   };
 
   handleToggleSidebarCollapsed = () => {
-    this.setState((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }));
+    this.setState(
+      (state) => ({ sidebarCollapsed: !state.sidebarCollapsed }),
+      () =>
+        localStorage.setItem(
+          'slskd-sidebar-collapsed',
+          this.state.sidebarCollapsed,
+        ),
+    );
   };
 
   handleToggleSidebarOpen = () => {

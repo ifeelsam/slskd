@@ -470,6 +470,7 @@ body {
   display: none;
 }
 
+
 /* ─── Main Content Area ──────────────────────────────────────────────────── */
 .app-content {
   flex: 1;
@@ -480,20 +481,10 @@ body {
   min-height: 100vh;
   background: var(--bg-app);
   transition: margin-left 0.2s ease;
-}
-
-/* Override the Semantic UI pusher that wraps the content */
-.pushable > .pusher.app-content {
-  min-height: 100vh;
-  background: var(--bg-app);
-  display: flex;
-  flex-direction: column;
-  margin-left: var(--sidebar-width) !important;
-  transition: margin-left 0.2s ease;
   overflow-x: hidden;
 }
 
-.pushable > .pusher.app-content.sidebar-collapsed {
+.app-content.sidebar-collapsed {
   margin-left: var(--sidebar-rail-width) !important;
 }
 
@@ -603,8 +594,8 @@ body {
     padding: 18px 16px 14px;
   }
 
-  .pushable > .pusher.app-content,
-  .pushable > .pusher.app-content.sidebar-collapsed {
+  .app-content,
+  .app-content.sidebar-collapsed {
     margin-left: 0 !important;
     padding-top: 60px; /* space for mobile nav */
   }
