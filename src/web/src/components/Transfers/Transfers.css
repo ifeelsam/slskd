@@ -1,25 +1,32 @@
+/* ─── Transfers header ───────────────────────────────────────────────────── */
 .transfers-header-segment {
-  margin-top: 15px !important;
-  height: 78px !important;
-  padding-top: 14px !important;
+  margin-top: 0 !important;
+  height: auto !important;
+  padding: 16px !important;
   display: flex;
+  align-items: center;
+  border-radius: var(--radius-md) !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-card) !important;
 }
 
 .transfers-segment-icon {
-  padding-top: 5px;
+  flex-shrink: 0;
   padding-right: 1em;
-  margin-top: 6px;
+  color: var(--text-muted);
 }
 
 .transfers-header-action-button {
-  float: right;
-  margin-top: -48px !important;
+  margin-left: auto !important;
 }
 
-.transfer-button {
-  color: black;
+.transfers-header-buttons {
+  display: inline;
+  margin-left: auto;
 }
 
+/* ─── Transfer card ──────────────────────────────────────────────────────── */
 .transfer-card {
   width: 100% !important;
   margin-left: auto !important;
@@ -28,16 +35,16 @@
 
 .transfer-segment {
   margin-top: 16px;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
 .transfer-placeholder {
-  font-weight: 100;
+  font-weight: 300;
   text-align: center;
   margin-top: 50px !important;
+  opacity: 0.5;
 }
 
+/* ─── Transfer list columns ──────────────────────────────────────────────── */
 .transferlist-size {
   width: 150px;
   min-width: 150px;
@@ -50,9 +57,67 @@
 
 .transferlist-filename {
   word-wrap: break-word !important;
+  font-weight: 500;
 }
 
-.transfers-header-buttons {
-  display: inline;
-  margin-left: auto;
+/* ─── Progress bar ───────────────────────────────────────────────────────── */
+.ui.progress {
+  border-radius: var(--radius-pill) !important;
+  background: var(--bg-surface-3) !important;
+  margin: 4px 0 !important;
+}
+
+.ui.progress .bar {
+  border-radius: var(--radius-pill) !important;
+  min-width: 0 !important;
+  transition: width 0.3s ease !important;
+}
+
+/* State colors */
+.ui.progress.success .bar { background: #3fb950 !important; }
+.ui.progress.active .bar  { background: var(--accent) !important; }
+.ui.progress.error .bar   { background: #f85149 !important; }
+.ui.progress.warning .bar { background: #d29922 !important; }
+
+/* ─── Status badges ──────────────────────────────────────────────────────── */
+.transfer-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.transfer-status-badge--inprogress {
+  background: rgba(47, 129, 247, 0.14);
+  color: #58a6ff;
+}
+
+.transfer-status-badge--queued {
+  background: rgba(110, 118, 129, 0.2);
+  color: var(--text-secondary);
+}
+
+.transfer-status-badge--complete {
+  background: rgba(63, 185, 80, 0.15);
+  color: #3fb950;
+}
+
+.transfer-status-badge--error {
+  background: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+}
+
+.transfer-status-badge--cancelled {
+  background: rgba(210, 153, 34, 0.15);
+  color: #d29922;
+}
+
+/* ─── Transfer button ────────────────────────────────────────────────────── */
+.transfer-button {
+  color: var(--text-primary) !important;
 }

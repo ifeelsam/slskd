@@ -1,104 +1,123 @@
 :root {
   --slskd-chat-color: #0e6eb8;
-  --slskd-self-message-background-color: rgba(0, 0, 0, 0.03);
+  --slskd-self-message-background-color: rgba(47, 129, 247, 0.06);
 }
 
 :root.dark {
-  --slskd-chat-color: #cce2ff;
-  --slskd-self-message-background-color: rgba(255, 255, 255, 0.03);
+  --slskd-chat-color: #58a6ff;
+  --slskd-self-message-background-color: rgba(47, 129, 247, 0.08);
+}
+
+/* ─── Chat outer layout ──────────────────────────────────────────────────── */
+.chats {
+  padding: 24px 24px 0;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 16px;
 }
 
 .chat {
   display: flex;
   margin-top: 1rem;
-  height: calc(100vh - 295px);
+  height: calc(100vh - 220px);
 }
 
 .chat > .segments {
   width: 100%;
-  box-shadow: unset !important;
+  box-shadow: none !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  border: 1px solid var(--border) !important;
 }
 
-.chats {
-  padding-left: 15px;
-  padding-right: 15px;
-  max-width: 1200px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  margin-bottom: 16px;
-}
-
+/* ─── Chat segment header ────────────────────────────────────────────────── */
 .chat-segment {
-  margin-top: 15px !important;
-  height: 78px;
+  margin-top: 0 !important;
+  height: auto !important;
+  padding: 16px !important;
   display: flex;
+  align-items: center;
+  border-radius: var(--radius-md) !important;
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-card) !important;
 }
 
 .chat-segment-icon {
-  padding-top: 10px;
-  padding-right: .5em;
+  flex-shrink: 0;
+  padding-right: 0.5em;
+  color: var(--text-muted);
 }
 
+/* ─── Conversation tabs ──────────────────────────────────────────────────── */
 .conversation-menu {
   overflow-x: auto;
-  box-shadow: unset !important;
-  height: 47px;
+  box-shadow: none !important;
+  height: 48px;
   width: 100%;
-  margin-top: unset !important;
+  margin-top: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 
 .conversation-menu > .menu-item {
-  font-size: 14pt;
+  font-size: 0.9rem;
 }
 
 .conversation-menu > .menu-active {
-  font-weight: bold !important;
+  font-weight: 600 !important;
+  color: var(--accent) !important;
 }
 
-.conversation-menu > .menu > .add-button {
-  margin: 0px;
-  border-top-left-radius: 0%;
-  border-bottom-left-radius: 0%;
-  border-radius: 0%;
-} 
-
+/* ─── Chat history ───────────────────────────────────────────────────────── */
 .chat-history {
-  padding: .5em .5em 0 .5em !important;
+  padding: 12px !important;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scroll-snap-type: y proximity;
   display: grid;
-  height: calc(100vh - 332px);
+  height: calc(100vh - 270px);
+  background: var(--bg-surface-2);
 }
 
 .chat-history > .list {
   align-self: end;
-  margin-bottom: .5em !important;
+  margin-bottom: 0.5em !important;
 }
 
 .chat-active-card {
   width: 100% !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-card) !important;
+  overflow: hidden;
 }
 
+/* ─── Messages ───────────────────────────────────────────────────────────── */
 .chat-message-name {
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.85rem;
 }
 
 .chat-message-time {
-  float:right;
-  opacity: .65;
-  font-size: smaller;
-  font-variant: small-caps;
+  float: right;
+  opacity: 0.5;
+  font-size: 0.75rem;
   font-style: italic;
 }
 
 .chat-message-self {
   color: var(--slskd-chat-color);
   background-color: var(--slskd-self-message-background-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
 }
 
+/* ─── Chat input ─────────────────────────────────────────────────────────── */
 .chat-input {
-  padding: 0px 0px 0px 1em !important;
+  padding: 12px !important;
+  background: var(--bg-surface) !important;
+  border-top: 1px solid var(--border) !important;
 }
 
 .chat-message-button {
@@ -106,14 +125,10 @@
 }
 
 #chat-history-scroll-anchor {
-  scroll-snap-align: start
+  scroll-snap-align: start;
 }
 
-/* semantic-ui-react colors the border of inputs
-   when a right aligned action is used, even when 
-   transparent is specified, and it uses !important.
-   this had to be added to an id to override the class
-   declaration. */
+/* Fix Semantic UI border override on right-action input */
 #chat-message-input {
-    border-right-color: transparent !important;
+  border-right-color: transparent !important;
 }

@@ -1,16 +1,16 @@
-import Logos from './Shared/Logo';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Button,
-  Checkbox,
-  Form,
-  Grid,
-  Header,
-  Icon,
-  Input,
-  Message,
-  Segment,
-} from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
+
+const Logos = [
+  `      ▄▄▄▄     ▄▄▄▄     ▄▄▄▄
+▄▄▄▄▄▄█  █▄▄▄▄▄█  █▄▄▄▄▄█  █
+█__ --█  █__ --█    ◄█  -  █
+█▄▄▄▄▄█▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄▄█`,
+  `        ▄▄▄▄         ▄▄▄▄       ▄▄▄▄
+▄▄▄▄▄▄▄ █  █ ▄▄▄▄▄▄▄ █  █▄▄▄ ▄▄▄█  █
+█__ --█ █  █ █__ --█ █    ◄█ █  -  █
+█▄▄▄▄▄█ █▄▄█ █▄▄▄▄▄█ █▄▄█▄▄█ █▄▄▄▄▄█`,
+];
 
 const initialState = {
   password: '',
@@ -19,7 +19,7 @@ const initialState = {
 };
 
 const LoginForm = ({ error, loading, onLoginAttempt }) => {
-  const usernameInput = useRef();
+  const usernameRef = useRef();
   const [state, setState] = useState(initialState);
   const [ready, setReady] = useState(false);
   const logo = useMemo(
@@ -28,98 +28,116 @@ const LoginForm = ({ error, loading, onLoginAttempt }) => {
   );
 
   useEffect(() => {
-    if (state.username !== '' && state.password !== '') {
-      setReady(true);
-    } else {
-      setReady(false);
-    }
+    setReady(state.username !== '' && state.password !== '');
   }, [state]);
 
   useEffect(() => {
-    usernameInput.current?.focus();
+    usernameRef.current?.focus();
   }, [loading]);
 
-  const handleChange = (field, value) => {
-    setState({
-      ...state,
-      [field]: value,
-    });
+  const handleChange = (field, value) =>
+    setState((prev) => ({ ...prev, [field]: value }));
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && ready && !loading) {
+      onLoginAttempt(state.username, state.password, state.rememberMe);
+    }
   };
 
   const { password, rememberMe, username } = state;
 
   return (
-    <Grid
-      style={{ height: '100vh' }}
-      textAlign="center"
-      verticalAlign="middle"
-    >
-      <Grid.Column style={{ maxWidth: 372 }}>
-        <Header
-          as="h2"
-          style={{
-            fontFamily: 'monospace',
-            fontSize: 'inherit',
-            letterSpacing: -1,
-            lineHeight: 1.1,
-            whiteSpace: 'pre',
-          }}
-          textAlign="center"
-        >
-          {logo}
-        </Header>
-        <Form size="large">
-          <Segment raised>
-            <Input
-              disabled={loading}
-              fluid
-              icon="user"
-              iconPosition="left"
-              onChange={(event) => handleChange('username', event.target.value)}
-              placeholder="Username"
-              ref={usernameInput}
-            />
-            <Form.Input
-              disabled={loading}
-              fluid
-              icon="lock"
-              iconPosition="left"
-              onChange={(event) => handleChange('password', event.target.value)}
-              placeholder="Password"
-              type="password"
-            />
-            <Checkbox
-              checked={rememberMe}
-              disabled={loading}
-              label="Remember Me"
-              onChange={() => handleChange('rememberMe', !rememberMe)}
-            />
-          </Segment>
-          <Button
-            className="login-button"
-            disabled={!ready || loading}
-            fluid
-            loading={loading}
-            onClick={() => onLoginAttempt(username, password, rememberMe)}
-            primary
-            size="large"
+    <div className="login-page">
+      <div className="login-card">
+        {/* ASCII Logo */}
+        <div className="login-logo">
+          <code className="login-logo-text">{logo}</code>
+        </div>
+
+        <h1 className="login-title">Sign in to slskd</h1>
+        <p className="login-subtitle">Your self-hosted Soulseek client</p>
+
+        {/* Username */}
+        <div className="login-field">
+          <label
+            className="login-label"
+            htmlFor="login-username"
           >
+            Username
+          </label>
+          <input
+            autoComplete="username"
+            className="login-input"
+            disabled={loading}
+            id="login-username"
+            onChange={(e) => handleChange('username', e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter username"
+            ref={usernameRef}
+            type="text"
+            value={username}
+          />
+        </div>
+
+        {/* Password */}
+        <div className="login-field">
+          <label
+            className="login-label"
+            htmlFor="login-password"
+          >
+            Password
+          </label>
+          <input
+            autoComplete="current-password"
+            className="login-input"
+            disabled={loading}
+            id="login-password"
+            onChange={(e) => handleChange('password', e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter password"
+            type="password"
+            value={password}
+          />
+        </div>
+
+        {/* Remember me */}
+        <label className="login-remember">
+          <input
+            checked={rememberMe}
+            disabled={loading}
+            onChange={() => handleChange('rememberMe', !rememberMe)}
+            type="checkbox"
+          />
+          Remember me
+        </label>
+
+        {/* Submit */}
+        <button
+          className={`login-btn${loading ? ' login-btn--loading' : ''}`}
+          disabled={!ready || loading}
+          onClick={() => onLoginAttempt(username, password, rememberMe)}
+          type="button"
+        >
+          {loading ? (
+            <Icon
+              loading
+              name="circle notch"
+            />
+          ) : (
             <Icon name="sign in" />
-            Login
-          </Button>
-          {error && (
-            <Message
-              className="login-failure"
-              floating
-              negative
-            >
-              <Icon name="x" />
-              {error.message}
-            </Message>
           )}
-        </Form>
-      </Grid.Column>
-    </Grid>
+          {loading ? 'Signing in…' : 'Sign in'}
+        </button>
+
+        {/* Error */}
+        {error && (
+          <div className="login-error">
+            <Icon name="exclamation circle" />
+            {error.message ?? 'Login failed'}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
