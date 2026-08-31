@@ -37,6 +37,8 @@ const initialState = {
   },
   retriesExhausted: false,
   transferMetrics: {},
+  sidebarCollapsed: false,
+  sidebarOpen: false,
 };
 
 // Format bytes/sec for display in the sidebar status
@@ -46,11 +48,12 @@ const fmtSpeed = (bps) => {
 };
 
 // A sidebar nav link that highlights when the current route matches
-const NavLink = ({ badge, icon, label, to }) => {
+const NavLink = ({ badge, icon, label, onClick, to }) => {
   const active = window.location.pathname.startsWith(to);
   return (
     <Link
       className={`app-nav-link${active ? ' active' : ''}`}
+      onClick={onClick}
       to={to}
     >
       <Icon name={icon} />
@@ -162,6 +165,20 @@ class App extends Component {
     });
   };
 
+  handleToggleSidebarCollapsed = () => {
+    this.setState((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }));
+  };
+
+  handleToggleSidebarOpen = () => {
+    this.setState((state) => ({ sidebarOpen: !state.sidebarOpen }));
+  };
+
+  handleCloseSidebarOnMobile = () => {
+    if (window.innerWidth <= 768) {
+      this.setState({ sidebarOpen: false });
+    }
+  };
+
   handleLogin = (username, password, rememberMe) => {
     this.setState(
       (previousState) => ({
@@ -208,6 +225,8 @@ class App extends Component {
       initialized,
       login,
       retriesExhausted,
+      sidebarCollapsed,
+      sidebarOpen,
       theme = this.getSavedTheme() ||
         (window.matchMedia('(prefers-color-scheme: dark)').matches
           ? 'dark'
@@ -300,8 +319,37 @@ class App extends Component {
 
     return (
       <>
+        {/* ── Mobile Top Nav ── */}
+        <div className="app-mobile-nav">
+          <button
+            className="app-mobile-hamburger"
+            onClick={this.handleToggleSidebarOpen}
+            type="button"
+          >
+            <Icon name="bars" />
+          </button>
+          <div className="app-mobile-brand">
+            <img
+              alt="slskd"
+              src="/favicon.ico"
+            />
+            <span>slskd</span>
+          </div>
+        </div>
+
+        {/* ── Mobile Dimmer Overlay ── */}
+        {sidebarOpen && (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+          <div
+            className="app-sidebar-overlay"
+            onClick={this.handleCloseSidebarOnMobile}
+          />
+        )}
+
         {/* ── Left Sidebar ── */}
-        <nav className="app-sidebar">
+        <nav
+          className={`app-sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${sidebarOpen ? 'open' : ''}`}
+        >
           {/* Brand */}
           <div className="app-sidebar-brand">
             <img
@@ -329,43 +377,51 @@ class App extends Component {
                 <NavLink
                   icon="chart bar"
                   label="Dashboard"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/dashboard`}
                 />
                 <NavLink
                   icon="search"
                   label="Search"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/searches`}
                 />
                 <div className="app-nav-section-label">Transfers</div>
                 <NavLink
                   icon="download"
                   label="Downloads"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/downloads`}
                 />
                 <NavLink
                   icon="upload"
                   label="Uploads"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/uploads`}
                 />
                 <div className="app-nav-section-label">Social</div>
                 <NavLink
                   icon="comments"
                   label="Rooms"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/rooms`}
                 />
                 <NavLink
                   icon="comment"
                   label="Chat"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/chat`}
                 />
                 <NavLink
                   icon="users"
                   label="Users"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/users`}
                 />
                 <NavLink
                   icon="folder open"
                   label="Browse"
+                  onClick={this.handleCloseSidebarOnMobile}
                   to={`${urlBase}/browse`}
                 />
               </>
@@ -416,6 +472,7 @@ class App extends Component {
             <NavLink
               icon="cogs"
               label="System"
+              onClick={this.handleCloseSidebarOnMobile}
               to={`${urlBase}/system`}
             />
 
@@ -583,23 +640,44 @@ class App extends Component {
               />
             )}
 
-            {/* Version */}
-            <div
-              className="app-sidebar-status"
-              style={{ fontSize: '0.72rem', opacity: 0.4 }}
-            >
-              <img
-                alt=""
-                src="/favicon.ico"
-                style={{ width: 12, height: 12 }}
-              />
-              <span>v{version.current} · AGPLv3</span>
+            {/* Version & Toggle Collapse */}
+            <div className="app-sidebar-bottom-controls">
+              <div
+                className="app-sidebar-status"
+                style={{
+                  fontSize: '0.72rem',
+                  opacity: 0.4,
+                  padding: '4px 12px',
+                }}
+              >
+                <img
+                  alt=""
+                  src="/favicon.ico"
+                  style={{ width: 12, height: 12 }}
+                />
+                <span>v{version.current} · AGPLv3</span>
+              </div>
+              <button
+                className="app-sidebar-collapse-btn"
+                onClick={this.handleToggleSidebarCollapsed}
+                type="button"
+              >
+                <Icon
+                  name={
+                    sidebarCollapsed
+                      ? 'angle double right'
+                      : 'angle double left'
+                  }
+                />
+              </button>
             </div>
           </div>
         </nav>
 
         {/* ── Main Content ── */}
-        <div className="app-content">
+        <div
+          className={`app-content ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+        >
           <div className="app-content-body">
             <AppContext.Provider
               // eslint-disable-next-line no-warning-comments

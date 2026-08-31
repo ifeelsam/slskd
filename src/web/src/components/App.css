@@ -208,9 +208,45 @@ body {
   top: 0;
   left: 0;
   bottom: 0;
+  bottom: 0;
   z-index: 200;
-  transition: width 0.2s ease;
+  transition: width 0.2s ease, transform 0.2s ease;
   overflow: hidden;
+}
+
+/* Sidebar collapsed state (desktop) */
+.app-sidebar.collapsed {
+  width: var(--sidebar-rail-width);
+}
+
+.app-sidebar.collapsed .app-sidebar-brand-name,
+.app-sidebar.collapsed .app-nav-link-label,
+.app-sidebar.collapsed .app-nav-section-label,
+.app-sidebar.collapsed .app-nav-badge,
+.app-sidebar.collapsed .app-nav-tag,
+.app-sidebar.collapsed .app-sidebar-speeds,
+.app-sidebar.collapsed .app-sidebar-status span {
+  display: none;
+}
+
+.app-sidebar.collapsed .app-nav-link {
+  justify-content: center;
+  padding: 10px;
+}
+
+.app-sidebar.collapsed .app-nav-link .icon {
+  width: auto;
+  font-size: 1.2em !important;
+}
+
+.app-sidebar.collapsed .app-sidebar-brand {
+  justify-content: center;
+  padding: 16px 8px;
+}
+
+.app-sidebar.collapsed .app-sidebar-brand-logo {
+  width: 24px;
+  height: 24px;
 }
 
 .app-sidebar-brand {
@@ -397,7 +433,41 @@ body {
 .app-sidebar-speed-value {
   color: rgba(255, 255, 255, 0.65);
   font-variant-numeric: tabular-nums;
+  padding: 4px 6px;
   min-width: 72px;
+}
+
+/* ─── Sidebar Bottom Controls ────────────────────────────────────────────── */
+.app-sidebar-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-sidebar);
+}
+
+.app-sidebar-collapse-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.app-sidebar-collapse-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app-sidebar.collapsed .app-sidebar-bottom-controls {
+  flex-direction: column;
+}
+
+.app-sidebar.collapsed .app-sidebar-bottom-controls .app-sidebar-status {
+  display: none;
 }
 
 /* ─── Main Content Area ──────────────────────────────────────────────────── */
@@ -419,7 +489,12 @@ body {
   display: flex;
   flex-direction: column;
   margin-left: var(--sidebar-width) !important;
+  transition: margin-left 0.2s ease;
   overflow-x: hidden;
+}
+
+.pushable > .pusher.app-content.sidebar-collapsed {
+  margin-left: var(--sidebar-rail-width) !important;
 }
 
 .app-content-body {
@@ -427,44 +502,111 @@ body {
   padding-bottom: 24px;
 }
 
+/* ─── Mobile Nav & Overlay ───────────────────────────────────────────────── */
+.app-mobile-nav {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 60px;
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border-sidebar);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.app-mobile-hamburger {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -8px;
+}
+
+.app-mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-family: 'Inter', monospace;
+  font-size: 1.1rem;
+}
+
+.app-mobile-brand img {
+  width: 24px;
+  height: 24px;
+}
+
+.app-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 150;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
 /* ─── Responsive sidebar ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .app-sidebar {
-    width: var(--sidebar-rail-width);
+  .app-mobile-nav {
+    display: flex;
   }
 
-  .app-sidebar-brand-name,
-  .app-nav-link-label,
-  .app-nav-section-label,
-  .app-nav-badge,
-  .app-nav-tag,
-  .app-sidebar-speeds,
-  .app-sidebar-status span {
+  .app-sidebar {
+    transform: translateX(-100%);
+    width: 240px; /* fixed width on mobile */
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .app-sidebar-overlay {
+    display: block;
+  }
+
+  .app-sidebar-collapse-btn {
     display: none;
   }
 
-  .app-nav-link {
-    justify-content: center;
-    padding: 10px;
+  /* Don't apply collapsed styles on mobile even if state is true */
+  .app-sidebar.collapsed {
+    width: 240px;
+  }
+  .app-sidebar.collapsed .app-sidebar-brand-name,
+  .app-sidebar.collapsed .app-nav-link-label,
+  .app-sidebar.collapsed .app-nav-section-label,
+  .app-sidebar.collapsed .app-nav-badge,
+  .app-sidebar.collapsed .app-nav-tag,
+  .app-sidebar.collapsed .app-sidebar-speeds,
+  .app-sidebar.collapsed .app-sidebar-status span {
+    display: block;
+  }
+  .app-sidebar.collapsed .app-nav-link {
+    justify-content: flex-start;
+    padding: 8px 16px;
+  }
+  .app-sidebar.collapsed .app-sidebar-brand {
+    justify-content: flex-start;
+    padding: 18px 16px 14px;
   }
 
-  .app-nav-link .icon {
-    width: auto;
-    font-size: 1.2em !important;
-  }
-
-  .app-sidebar-brand {
-    justify-content: center;
-    padding: 16px 8px;
-  }
-
-  .app-sidebar-brand-logo {
-    width: 24px;
-    height: 24px;
-  }
-
-  .pushable > .pusher.app-content {
-    margin-left: var(--sidebar-rail-width) !important;
+  .pushable > .pusher.app-content,
+  .pushable > .pusher.app-content.sidebar-collapsed {
+    margin-left: 0 !important;
+    padding-top: 60px; /* space for mobile nav */
   }
 }
 
