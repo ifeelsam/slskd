@@ -19,9 +19,10 @@ const FileList = ({
   footer,
   locked,
   onClose,
-  onDownloadAs,
   onDownloadFile,
+  onDownloadFileTo,
   onDownloadFolder,
+  onDownloadFolderTo,
   onSelectionChange,
 }) => {
   const [folded, setFolded] = useState(false);
@@ -81,6 +82,9 @@ const FileList = ({
                   <Table.HeaderCell className="filelist-length">
                     Length
                   </Table.HeaderCell>
+                  <Table.HeaderCell className="filelist-actions">
+                    Actions
+                  </Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -114,13 +118,25 @@ const FileList = ({
                       <Table.Cell className="filelist-length">
                         {formatSeconds(f.length)}
                       </Table.Cell>
+                      <Table.Cell className="filelist-actions">
+                        <Icon
+                          color="blue"
+                          disabled={disabled || locked}
+                          link={!disabled && !locked}
+                          name="download"
+                          onClick={() =>
+                            !disabled && !locked && onDownloadFile?.(f)
+                          }
+                          title="Download"
+                        />
+                      </Table.Cell>
                     </Table.Row>
                   ))}
               </Table.Body>
               {footer && (
                 <Table.Footer fullWidth>
                   <Table.Row>
-                    <Table.HeaderCell colSpan="5">{footer}</Table.HeaderCell>
+                    <Table.HeaderCell colSpan="6">{footer}</Table.HeaderCell>
                   </Table.Row>
                 </Table.Footer>
               )}
@@ -137,14 +153,14 @@ const FileList = ({
             icon="download"
             onClick={() => onDownloadFile?.(file)}
           >
-            Download file to…
+            Download File
           </ContextMenuItem>
           <ContextMenuItem
-            disabled={disabled || !file || !onDownloadAs}
+            disabled={disabled || !file || !onDownloadFileTo}
             icon="folder open"
-            onClick={() => onDownloadAs?.(file)}
+            onClick={() => onDownloadFileTo?.(file)}
           >
-            Download as… (choose folder)
+            Download File to…
           </ContextMenuItem>
           <ContextMenuDivider />
           <ContextMenuItem
@@ -152,7 +168,14 @@ const FileList = ({
             icon="folder"
             onClick={() => onDownloadFolder?.(directoryName)}
           >
-            Download folder to…
+            Download Folder
+          </ContextMenuItem>
+          <ContextMenuItem
+            disabled={disabled || !onDownloadFolderTo}
+            icon="folder open outline"
+            onClick={() => onDownloadFolderTo?.(directoryName)}
+          >
+            Download Folder to…
           </ContextMenuItem>
         </>
       ))}

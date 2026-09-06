@@ -249,9 +249,15 @@ class Response extends Component {
               }
               key={directory}
               locked={tree[directory].find((file) => file.locked)}
-              onDownloadAs={(file) => this.openContextPicker([file])}
-              onDownloadFile={(file) => this.openContextPicker([file])}
+              onDownloadFile={(file) =>
+                this.download(response.username, [file], undefined)
+              }
+              onDownloadFileTo={(file) => this.openContextPicker([file])}
               onDownloadFolder={(dir) => {
+                const allFiles = tree[dir] ?? [];
+                this.download(response.username, allFiles, undefined);
+              }}
+              onDownloadFolderTo={(dir) => {
                 const allFiles = tree[dir] ?? [];
                 this.openContextPicker(allFiles);
               }}

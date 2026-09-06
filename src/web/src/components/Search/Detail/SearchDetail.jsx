@@ -1,8 +1,4 @@
-import {
-  filterResponse,
-  getResponses,
-  parseFiltersFromString,
-} from '../../../lib/searches';
+import { filterResponse, getResponses } from '../../../lib/searches';
 import { sleep } from '../../../lib/util';
 import ErrorSegment from '../../Shared/ErrorSegment';
 import LoaderSegment from '../../Shared/LoaderSegment';
@@ -10,7 +6,15 @@ import Switch from '../../Shared/Switch';
 import Response from '../Response';
 import SearchDetailHeader from './SearchDetailHeader';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Dropdown, Input, Segment } from 'semantic-ui-react';
+import {
+  Accordion,
+  Button,
+  Checkbox,
+  Dropdown,
+  Form,
+  Icon,
+  Segment,
+} from 'semantic-ui-react';
 
 const sortDropdownOptions = [
   {
@@ -49,7 +53,25 @@ const SearchDetail = ({
   const [hideLocked, setHideLocked] = useState(true);
   const [hideNoFreeSlots, setHideNoFreeSlots] = useState(false);
   const [foldResults, setFoldResults] = useState(false);
-  const [resultFilters, setResultFilters] = useState('');
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    exclude: '',
+    include: '',
+    isCBR: false,
+    isLossless: false,
+    isLossy: false,
+    isVBR: false,
+    minBitDepth: '',
+    minBitRate: '',
+    minFilesInFolder: '',
+    minFileSize: '',
+    minLength: '',
+  });
+
+  const handleFilterChange = (field, value) => {
+    setAdvancedFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
   const [displayCount, setDisplayCount] = useState(5);
 
   // when the search transitions from !isComplete -> isComplete,
@@ -87,7 +109,35 @@ const SearchDetail = ({
 
     const { field, order } = sortOptions[resultSort];
 
-    const filters = parseFiltersFromString(resultFilters);
+    const includeArr = advancedFilters.include
+      .toLowerCase()
+      .split(' ')
+      .filter(Boolean);
+    const excludeArr = advancedFilters.exclude
+      .toLowerCase()
+      .split(' ')
+      .filter(Boolean);
+
+    const filters = {
+      ...advancedFilters,
+      include: includeArr,
+      exclude: excludeArr,
+      minBitDepth: advancedFilters.minBitDepth
+        ? Number.parseInt(advancedFilters.minBitDepth, 10)
+        : 0,
+      minBitRate: advancedFilters.minBitRate
+        ? Number.parseInt(advancedFilters.minBitRate, 10)
+        : 0,
+      minFilesInFolder: advancedFilters.minFilesInFolder
+        ? Number.parseInt(advancedFilters.minFilesInFolder, 10)
+        : 0,
+      minFileSize: advancedFilters.minFileSize
+        ? Number.parseInt(advancedFilters.minFileSize, 10)
+        : 0,
+      minLength: advancedFilters.minLength
+        ? Number.parseInt(advancedFilters.minLength, 10)
+        : 0,
+    };
 
     return results
       .filter((r) => !hiddenResults.includes(r.username))
@@ -109,10 +159,10 @@ const SearchDetail = ({
         return b[field] - a[field];
       });
   }, [
+    advancedFilters,
     hiddenResults,
     hideLocked,
     hideNoFreeSlots,
-    resultFilters,
     resultSort,
     results,
   ]);
@@ -215,23 +265,139 @@ const SearchDetail = ({
                 toggle
               />
             </div>
-            <Input
-              action={
-                Boolean(resultFilters) && {
-                  color: 'red',
-                  icon: 'x',
-                  onClick: () => setResultFilters(''),
-                }
-              }
-              className="search-filter"
-              label={{ content: 'Filter', icon: 'filter' }}
-              onChange={(_event, data) => setResultFilters(data.value)}
-              placeholder="
-                lackluster container -bothersome iscbr|isvbr islossless|islossy 
-                minbitrate:320 minbitdepth:24 minfilesize:10 minfilesinfolder:8 minlength:5000
-              "
-              value={resultFilters}
-            />
+            <Accordion style={{ marginTop: '1em' }}>
+              <Accordion.Title
+                active={filtersExpanded}
+                onClick={() => setFiltersExpanded(!filtersExpanded)}
+              >
+                <Icon name="dropdown" />
+                Advanced Filters
+              </Accordion.Title>
+              <Accordion.Content active={filtersExpanded}>
+                <Form>
+                  <Form.Group widths="equal">
+                    <Form.Input
+                      fluid
+                      label="Include Terms"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('include', value)
+                      }
+                      placeholder="e.g. lackluster container"
+                      value={advancedFilters.include}
+                    />
+                    <Form.Input
+                      fluid
+                      label="Exclude Terms"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('exclude', value)
+                      }
+                      placeholder="e.g. bothersome"
+                      value={advancedFilters.exclude}
+                    />
+                  </Form.Group>
+                  <Form.Group widths="equal">
+                    <Form.Input
+                      fluid
+                      label="Min Bitrate (kbps)"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('minBitRate', value)
+                      }
+                      placeholder="320"
+                      type="number"
+                      value={advancedFilters.minBitRate}
+                    />
+                    <Form.Input
+                      fluid
+                      label="Min Bit Depth"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('minBitDepth', value)
+                      }
+                      placeholder="24"
+                      type="number"
+                      value={advancedFilters.minBitDepth}
+                    />
+                    <Form.Input
+                      fluid
+                      label="Min File Size (Bytes)"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('minFileSize', value)
+                      }
+                      placeholder="10000000"
+                      type="number"
+                      value={advancedFilters.minFileSize}
+                    />
+                    <Form.Input
+                      fluid
+                      label="Min Files In Folder"
+                      onChange={(_e, { value }) =>
+                        handleFilterChange('minFilesInFolder', value)
+                      }
+                      placeholder="8"
+                      type="number"
+                      value={advancedFilters.minFilesInFolder}
+                    />
+                  </Form.Group>
+                  <Form.Group inline>
+                    <strong style={{ marginRight: '0.5em' }}>Format:</strong>
+                    <Form.Checkbox
+                      checked={advancedFilters.isCBR}
+                      label="CBR Only"
+                      onChange={(_e, { checked }) => {
+                        handleFilterChange('isCBR', checked);
+                        if (checked) handleFilterChange('isVBR', false);
+                      }}
+                    />
+                    <Form.Checkbox
+                      checked={advancedFilters.isVBR}
+                      label="VBR Only"
+                      onChange={(_e, { checked }) => {
+                        handleFilterChange('isVBR', checked);
+                        if (checked) handleFilterChange('isCBR', false);
+                      }}
+                    />
+                    <strong style={{ marginLeft: '1em', marginRight: '0.5em' }}>Quality:</strong>
+                    <Form.Checkbox
+                      checked={advancedFilters.isLossless}
+                      label="Lossless Only"
+                      onChange={(_e, { checked }) => {
+                        handleFilterChange('isLossless', checked);
+                        if (checked) handleFilterChange('isLossy', false);
+                      }}
+                    />
+                    <Form.Checkbox
+                      checked={advancedFilters.isLossy}
+                      label="Lossy Only"
+                      onChange={(_e, { checked }) => {
+                        handleFilterChange('isLossy', checked);
+                        if (checked) handleFilterChange('isLossless', false);
+                      }}
+                    />
+                    <Form.Button
+                      content="Clear Filters"
+                      icon="x"
+                      onClick={() =>
+                        setAdvancedFilters({
+                          exclude: '',
+                          include: '',
+                          isCBR: false,
+                          isLossless: false,
+                          isLossy: false,
+                          isVBR: false,
+                          minBitDepth: '',
+                          minBitRate: '',
+                          minFilesInFolder: '',
+                          minFileSize: '',
+                          minLength: '',
+                        })
+                      }
+                      size="small"
+                      style={{ marginLeft: 'auto' }}
+                      type="button"
+                    />
+                  </Form.Group>
+                </Form>
+              </Accordion.Content>
+            </Accordion>
           </Segment>
         )}
         {loaded &&

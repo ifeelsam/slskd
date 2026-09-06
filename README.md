@@ -61,7 +61,7 @@ docker run -d \
 
 Or use the Linuxserver/*arr `PUID`/`PGID` method:
 
-```shell
+```shel
 docker run -d \
   -p 5030:5030 \
   -p 5031:5031 \
