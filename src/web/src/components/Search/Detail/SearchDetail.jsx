@@ -355,7 +355,9 @@ const SearchDetail = ({
                         if (checked) handleFilterChange('isCBR', false);
                       }}
                     />
-                    <strong style={{ marginLeft: '1em', marginRight: '0.5em' }}>Quality:</strong>
+                    <strong style={{ marginLeft: '1em', marginRight: '0.5em' }}>
+                      Quality:
+                    </strong>
                     <Form.Checkbox
                       checked={advancedFilters.isLossless}
                       label="Lossless Only"
