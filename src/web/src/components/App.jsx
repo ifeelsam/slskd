@@ -371,11 +371,6 @@ class App extends Component {
             <span className="app-sidebar-brand-name">slskd</span>
           </div>
 
-          {/* Canary / Agent banners */}
-          {version.isCanary && (
-            <div className="canary-banner">🧪 Canary Build</div>
-          )}
-
           {/* Nav items */}
           <div className="app-sidebar-nav">
             {isAgent ? (

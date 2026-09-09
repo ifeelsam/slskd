@@ -53,43 +53,43 @@
 /* ─── Design Tokens — Dark Mode ─────────────────────────────────────────── */
 :root.dark {
   /* Backgrounds */
-  --bg-app: #0d1117;
-  --bg-surface: #161b22;
-  --bg-surface-2: #21262d;
-  --bg-surface-3: #30363d;
-  --bg-sidebar: #0d1117;
-  --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
-  --bg-sidebar-active: rgba(47, 129, 247, 0.2);
+  --bg-app: #0B0E14;
+  --bg-surface: #151A22;
+  --bg-surface-2: #1E2532;
+  --bg-surface-3: #2A3441;
+  --bg-sidebar: #0B0E14;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.08);
+  --bg-sidebar-active: rgba(99, 102, 241, 0.15);
 
   /* Text */
-  --text-primary: #e6edf3;
-  --text-secondary: #8d96a0;
-  --text-muted: #656d76;
-  --text-sidebar: rgba(230, 237, 243, 0.65);
-  --text-sidebar-active: #e6edf3;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-sidebar: rgba(248, 250, 252, 0.7);
+  --text-sidebar-active: #FFFFFF;
 
   /* Borders */
-  --border: rgba(240, 246, 252, 0.1);
-  --border-strong: rgba(240, 246, 252, 0.18);
-  --border-sidebar: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-sidebar: rgba(255, 255, 255, 0.05);
 
   /* Shadows */
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-modal: 0 8px 40px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 
   /* Semantic UI dark-mode variables (kept for compatibility) */
-  --slskd-primary-background: #0d1117;
-  --slskd-secondary-background: #161b22;
-  --slskd-overlay-background: #161b22;
-  --slskd-tertiary-background: #21262d;
-  --slskd-tertiary-border-color: rgba(240, 246, 252, 0.1);
-  --slskd-subtle-background: rgba(110, 118, 129, 0.1);
-  --slskd-color: #e6edf3;
-  --slskd-color-subtle: #656d76;
-  --slskd-hover-background: #30363d;
-  --slskd-color-inset: #010409;
-  --slskd-emphasis-background: #1f6feb;
+  --slskd-primary-background: var(--bg-app);
+  --slskd-secondary-background: var(--bg-surface);
+  --slskd-overlay-background: var(--bg-surface);
+  --slskd-tertiary-background: var(--bg-surface-2);
+  --slskd-tertiary-border-color: var(--border);
+  --slskd-subtle-background: rgba(255, 255, 255, 0.05);
+  --slskd-color: var(--text-primary);
+  --slskd-color-subtle: var(--text-muted);
+  --slskd-hover-background: var(--bg-surface-3);
+  --slskd-color-inset: #050505;
+  --slskd-emphasis-background: #6366F1;
   --background-color: var(--bg-app);
   --smui-site-body-text-color: var(--slskd-color);
   --smui-site-input-color: var(--smui-site-body-text-color);
@@ -1018,19 +1018,6 @@ body {
   display: none !important;
 }
 
-/* ─── Canary banner ──────────────────────────────────────────────────────── */
-.canary-banner {
-  background: linear-gradient(90deg, #d29922 0%, #f0c040 100%);
-  color: #000;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 2px 8px;
-  letter-spacing: 0.06em;
-  border-radius: var(--radius-pill);
-  margin: 6px 8px 0;
-  flex-shrink: 0;
-}
 
 /* ─── Page fade-in animation ─────────────────────────────────────────────── */
 @keyframes page-enter {
